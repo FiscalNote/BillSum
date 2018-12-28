@@ -1,16 +1,16 @@
 import json
+import jsonlines
 import numpy as np
 import re
 import os
 import xml.etree.ElementTree as ET
 
 # Text Length Cut-offs for the dataset
-MIN_TEXT_LENGTH = 1000
-MAX_TEXT_LENGTH = 150000
+MIN_TEXT_LENGTH = 2000
+MAX_TEXT_LENGTH = 20000
 
 
 cleanr = re.compile('<.*?>')
-
 def clean_html(raw_html):
   cleantext = re.sub(cleanr, '', raw_html)
   return cleantext
@@ -86,7 +86,10 @@ def extract_data_json(data):
     else:
         title = titles[-1].get('title')
 
-    summary = data.get('summary', {}).get('text')
+    if data.get('summary') is None:
+        summary = None
+    else:
+        summary = data.get('summary').get('text')
 
     return {'title': title, 'summary': summary}
 
@@ -129,6 +132,9 @@ def prepare_html_text(html_text):
     if 'RESOLUTION' in text:
         i = text.index('RESOLUTION')
         text = text[i + len('RESOLUTION'):]
+    if 'Concurrent Resolution' in text:
+        i = text.index('Concurrent Resolution')
+        text = text[i + len('Concurrent Resolution'):]
 
     # Clean off white space from both ends
     text = text.strip()
@@ -156,7 +162,7 @@ def prepare_bill(bill_dir, session):
 
     # Get the bill id from the path - its the final subfolder
     billid = os.path.basename(os.path.normpath(bill_dir))
-    final_data['bill_id'] = session + '_' + billid 
+    final_data['bill_id'] = str(session) + '_' + billid 
 
     # Next get the text 
     f = os.path.join(bill_dir, 'text-versions')
@@ -177,21 +183,51 @@ def prepare_bill(bill_dir, session):
 
         # If to short or too long, dont return the text
         if len(text) < MIN_TEXT_LENGTH or len(text) > MAX_TEXT_LENGTH:
+
             text = None
 
         final_data['text'] = text
 
     return final_data
 
-#f = '../usbills/data/114/bills/hr/hr1901/'
-#print(prepare_bill(f))
-d = '../usbills/data/114/bills/hr/'
 
-for file in os.listdir(d):
-    if  os.path.isdir(d + file):
-        try:
-            prepare_bill(d + file)
-        except ValueError:
-            print(d + file)
+if __name__ == '__main__':
+    for ses in range(107, 116):
 
-            
+        # Change to your prefix
+        path = '../BSDATA/{}/bills/'.format(ses)
+
+        final_dataset = []
+        i = 0
+        j = 0
+        z = 0
+        for btype in os.listdir(path):
+            if '.DS_Store' in btype:
+                continue
+            subpath = os.path.join(path, btype)
+            #if 'res' in btype:
+            #    continue
+            for file in os.listdir(subpath):
+                
+                billpath = os.path.join(subpath, file)
+
+                if  os.path.isdir(billpath):
+                    try:
+                        bd = prepare_bill(billpath, ses)
+                        if bd.get('summary') is not None and bd.get('text') is not None:
+                            final_dataset.append(bd)
+                            i += 1
+
+                        else:
+                            j += 1
+                    except ValueError as e:
+                        print(e, file)
+                        z += 1
+
+        print(j, i, z)
+        with open('../BSDATA/final/final_data_{}.jsonl'.format(ses), 'w') as f:
+            writer = jsonlines.Writer(f)
+            writer.write_all(final_dataset)
+
+
+                    
