@@ -13,6 +13,8 @@ MAX_TEXT_LENGTH = 20000
 cleanr = re.compile('<.*?>')
 def clean_html(raw_html):
   cleantext = re.sub(cleanr, '', raw_html)
+  # Additional noise in docs
+  cleantext = cleantext.replace('&lt;all&gt;', '')
   return cleantext
 
 def clean_summary(text):
