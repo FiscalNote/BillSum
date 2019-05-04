@@ -25,7 +25,7 @@ i = 0
 prefix = 'BILLSTATUS'
 base = 'https://www.govinfo.gov/bulkdata/json/' + prefix + '/'
 
-for session in range(113, 116):
+for session in range(103, 108):
 
     print(session)
 

@@ -137,9 +137,17 @@ def prepare_html_text(html_text):
     if 'Concurrent Resolution' in text:
         i = text.index('Concurrent Resolution')
         text = text[i + len('Concurrent Resolution'):]
+    if 'Joint Resolution' in text:
+        i = text.index('Joint Resolution')
+        text = text[i + len('Joint Resolution'):]
 
     # Clean off white space from both ends
     text = text.strip()
+
+    # Weird ending
+    if 'Union Calendar' in text:
+        i = text.index('Union Calendar')
+        text = text[:i]
     return text
 
 def prepare_bill(bill_dir, session):
@@ -149,19 +157,20 @@ def prepare_bill(bill_dir, session):
 
     Takes in session to make a more specific billid
     '''
+    print(bill_dir)
+    # # Extract basic bill data
+    # if os.path.isfile(os.path.join(bill_dir, 'data.json')):
+    #     data = json.load(open(os.path.join(bill_dir, 'data.json')))
+    #     final_data = extract_data_json(data)
 
-    # Extract basic bill data
-    if os.path.isfile(os.path.join(bill_dir, 'data.json')):
-        data = json.load(open(os.path.join(bill_dir, 'data.json')))
-        final_data = extract_data_json(data)
+    # elif os.path.isfile(os.path.join(bill_dir, 'data.xml')):
+    #     f = os.path.join(bill_dir, 'data.xml')
+    #     bill_data = ET.parse(f).getroot()
+    #     final_data = extract_data_xml(bill_data)
+    # else:
+    #     raise ValueError('No data file for bill ')
 
-    elif os.path.isfile(os.path.join(bill_dir, 'data.xml')):
-        f = os.path.join(bill_dir, 'data.xml')
-        bill_data = ET.parse(f).getroot()
-        final_data = extract_data_xml(bill_data)
-    else:
-        raise ValueError('No data file for bill ')
-
+    final_data = {}
     # Get the bill id from the path - its the final subfolder
     billid = os.path.basename(os.path.normpath(bill_dir))
     final_data['bill_id'] = str(session) + '_' + billid 
@@ -184,9 +193,9 @@ def prepare_bill(bill_dir, session):
         text = prepare_html_text(t)
 
         # If to short or too long, dont return the text
-        if len(text) < MIN_TEXT_LENGTH or len(text) > MAX_TEXT_LENGTH:
+        # if len(text) < MIN_TEXT_LENGTH or len(text) > MAX_TEXT_LENGTH:
 
-            text = None
+        #     text = None
 
         final_data['text'] = text
 
@@ -194,10 +203,10 @@ def prepare_bill(bill_dir, session):
 
 
 if __name__ == '__main__':
-    for ses in range(107, 116):
+    for ses in range(107, 113):
 
         # Change to your prefix
-        path = '../BSDATA/{}/bills/'.format(ses)
+        path = 'data/all_data/{}/bills/'.format(ses)
 
         final_dataset = []
         i = 0
@@ -207,8 +216,9 @@ if __name__ == '__main__':
             if '.DS_Store' in btype:
                 continue
             subpath = os.path.join(path, btype)
-            #if 'res' in btype:
-            #    continue
+            if 'res' in btype:
+                continue
+            
             for file in os.listdir(subpath):
                 
                 billpath = os.path.join(subpath, file)
@@ -227,7 +237,7 @@ if __name__ == '__main__':
                         z += 1
 
         print(j, i, z)
-        with open('../BSDATA/final/final_data_{}.jsonl'.format(ses), 'w') as f:
+        with open('all_data_{}.jsonl'.format(ses), 'w') as f:
             writer = jsonlines.Writer(f)
             writer.write_all(final_dataset)
 
