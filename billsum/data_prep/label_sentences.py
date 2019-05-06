@@ -107,10 +107,12 @@ def prepare_labels(bill_data,  min_sent_words=5):
 if __name__ == '__main__':
     import pandas as pd 
 
-    data = pd.read_json('clean_final/us_test_data_final.jsonl', lines=True)
+    prefix = '/data/billsum/'
+
+    data = pd.read_json(prefix + 'clean_final/us_test_data_final.jsonl', lines=True)
     sent_scores = prepare_labels(data)
 
-    pickle.dump(sent_scores, open('clean_final/us_test_sent_scores.pkl', 'wb'))
+    pickle.dump(sent_scores, open(prefix + 'clean_final/us_test_sent_scores.pkl', 'wb'))
 
 
 

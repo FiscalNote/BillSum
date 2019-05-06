@@ -1,4 +1,7 @@
-from bill_sum.post_process import greedy_selection
+'''
+Script to run the generic baselines over the data
+'''
+from billsum.post_process import greedy_summarize
 
 from collections import defaultdict
 import jsonlines
@@ -29,17 +32,16 @@ rouge = Rouge()
 LANGUAGE = 'ENGLISH'
 stemmer = Stemmer(LANGUAGE)
 
-prefix = "new_data/"
-prefix2 = "score_data/baseline_scores/"
-# import warnings
-# warnings.filterwarnings("error")
+prefix = "/data/billsum/"
+prefix2 = "/data/billsum/score_data/baseline_scores/"
+
 
 import sys 
 print(sys.getrecursionlimit())
 sys.setrecursionlimit(5000)
 
-for session in [107]:
-    path = os.path.expanduser('~/BSDATA/final/final_data_{}_clean.jsonl'.format(session))
+for file in os.listdir(prefix)
+    path = os.path.join(prefix, file)
 
     data = []
 
@@ -76,7 +78,7 @@ for session in [107]:
                 sent_scores = [(s.sentence.words, s.rating) for s in sent_scores]
 
                 # Pick best set with greedy
-                final_sents = greedy_selection(sent_scores, chars=2000)
+                final_sents = greedy_summarize(*zip(*sent_scores))
 
                 final_sum = ' '.join(w for s in final_sents for w in s)
                 score = rouge.get_scores([final_sum],[summary])[0]
@@ -86,5 +88,5 @@ for session in [107]:
             except KeyboardInterrupt:
                 raise KeyboardInterrupt
         
-    pickle.dump(all_scores, open(prefix2 + 'baseline_scores_{}.pkl'.format(session), 'wb'))
+    pickle.dump(all_scores, open(prefix2 + 'baseline_{}.pkl'.format(file), 'wb'))
 
