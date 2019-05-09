@@ -1,7 +1,72 @@
+from billsum.classifiers.features.generic_features import *
+from billsum.classifiers.features.tfidf_features import *
 from billsum.classifiers.text_transformer import SpacyTfidfWrapper
+from billsum.utils.sentence_utils import list_to_doc
 
 import numpy as np
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+
+
+
+class FeatureScorer:
+
+    def __init__(self, classifier=None, score=('rouge-2', 'p')):
+        
+        self.feats = [HasNerF(), NearSectionStartF(), IsLongF(), SecretaryF(), 
+                        SentencePosF(), GlobalTfidfF(), DocTfidfF(), KLSummaryF()]
+
+
+        if classifier is None:
+            self.clf = RandomForestClassifier(min_sample_split=10, n_estimators=20)
+        else:
+            self.clf = classifier
+
+        self.score_type = score
+
+        self.score_threshold = 0.1
+
+    def create_features(self, doc):
+
+        all_feats = []
+
+        for f in self.feats:
+            f.prepare_doc(doc)
+            all_feats.append(f.make_all_features(doc))
+
+        all_feats = np.hstack(all_feats)
+
+        return all_feats
+
+    def train(self, train_docs):
+        
+        # Transform sentences into our custom format
+        new_docs = [list_to_doc(doc['doc']) for doc in train_docs]
+
+        sumdocs = [doc['sum_doc'] for doc in train_docs]
+
+        for f in self.feats:
+            f.fit(new_docs, summaries=sumdocs)
+
+        all_features = [self.create_features(doc) for doc in new_docs]
+
+        X = np.vstack(all_features)
+
+        
+        rtype, mtype = self.score_type
+
+        y_train = np.array([y[rtype][mtype] for d in train_docs for y in d['scores']])
+        y_train2 = y_train > self.score_threshold
+        return X, y_train2
+        self.clf.fit(X, y_train2)
+        print("Classifier fit:", self.clf.score(X, y_train2), y_train2.mean())
+
+    def score(self, doc):
+
+        doc = list_to_doc(doc['doc'])
+        X = self.create_features(doc)
+
+        return self.clf.predict_proba(X)[:,1]
 
 
 class TextScorer:

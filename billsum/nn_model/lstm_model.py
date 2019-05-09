@@ -154,7 +154,7 @@ class LSTMWrapper:
 
         X, _ = prepare_texts(sents, n_word=self.n_word, tok=self.tokenizer)
 
-        ys = model.predict(X)[:,0]
+        ys = self.model.predict(X)[:,0]
 
         return ys
 
