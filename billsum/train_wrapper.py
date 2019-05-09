@@ -55,19 +55,22 @@ for bill_id, sents in us_test_sents.items():
 del us_test, us_test_sents
 
 ################ Learn to score and summarize ############################
-model = TextScorer()
-model.train(final_train.values())
+from billsum.nn_model.lstm_model import LSTMWrapper
+
+model = LSTMWrapper()
+model.train(list(final_train.values()))
+pickle.dump(model, open('mymodel.pkl', 'wb'))
 
 # Summarizer
-final_scores = {}
-for bill_id, doc in final_test.items():
+#final_scores = {}
+#for bill_id, doc in final_test.items():
 
-	scores = model.score(doc)
+	# scores = model.score(doc)
 
-	final_sum = ' '.join(greedy_summarize(doc['sent_texts'], scores))
+	# final_sum = ' '.join(greedy_summarize(doc['sent_texts'], scores))
 
-	rs = rouge.get_scores([final_sum],[doc['sum_text']])[0]
+	# rs = rouge.get_scores([final_sum],[doc['sum_text']])[0]
 
-	final_scores[bill_id] = rs
+	# final_scores[bill_id] = rs
 
 
