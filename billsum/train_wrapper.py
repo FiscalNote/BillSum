@@ -38,9 +38,9 @@ for bill_id, sents in us_train_sents.items():
 
 del us_train, us_train_sents, us_train_summary
 
-us_test = pd.read_json(prefix + 'clean_final/ca_test_data_final.jsonl', lines=True)
+us_test = pd.read_json(prefix + 'clean_final/us_test_data_final.jsonl', lines=True)
 us_test.set_index('bill_id', inplace=True)
-us_test_sents = pickle.load(open(prefix + 'sent_data/ca_test_sent_scores.pkl', 'rb'))
+us_test_sents = pickle.load(open(prefix + 'sent_data/us_test_sent_scores.pkl', 'rb'))
 us_test_summary = pickle.load(open(prefix + 'clean_final/us_test_summary_sents.pkl', 'rb'))
 
 
