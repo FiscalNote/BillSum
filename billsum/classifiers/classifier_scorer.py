@@ -43,7 +43,7 @@ class TextScorer:
         self.clf.fit(X, y_train2)
         print("Classifier fit:", self.clf.score(X, y_train2), y_train2.mean())
 
-    def score(self, test_doc):
+    def score_doc(self, test_doc):
 
         myX = self.tfidf.transform_by_sent([test_doc['doc']])
         y_pred = self.clf.decision_function(myX)

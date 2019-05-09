@@ -1,13 +1,16 @@
 from billsum.classifiers.classifier_scorer import TextScorer
-from billsum.post_process import greedy_summarize
+from billsum.post_process import greedy_summarize, mmr_selection
 from billsum.utils.sentence_utils import list_to_doc
 
 import numpy as np
 import pandas as pd
 import pickle
 
+from rouge import Rouge
+rouge = Rouge()
 
-prefix = '/Users/anastassiakornilova/BSDATA/'
+prefix = '/data/billsum/'
+
 
 ##########     Load in the data ###############
 us_train = pd.read_json(prefix + 'clean_final/us_train_data_final.jsonl', lines=True)
@@ -29,7 +32,6 @@ for bill_id, sents in us_train_sents.items():
     title = us_train.loc[bill_id]['clean_title']
 
     final_train[bill_id] = {'doc': doc, 'scores': scores, 'sum_text': summary, 'sent_texts': sent_texts, 'title': title}
-
 del us_train, us_train_sents
 
 us_test = pd.read_json(prefix + 'clean_final/us_test_data_final.jsonl', lines=True)
@@ -50,27 +52,27 @@ for bill_id, sents in us_test_sents.items():
 
     title = us_test.loc[bill_id]['clean_title']
 
-    final_test[bill_id] = {'doc': doc, 'scores': scores, 'sum_text': summary, 'sent_texts': sent_texts, 'title': title}
+    final_test[bill_id] = {'doc': doc, 'scores': scores, 'sum_text': summary, 'sent_texts': sent_texts, 'title': title, 'textlen': len(us_test.loc[bill_id]['text'])}
 
 del us_test, us_test_sents
 
 ################ Learn to score and summarize ############################
-from billsum.nn_model.lstm_model import LSTMWrapper
-
-model = LSTMWrapper()
-model.train(list(final_train.values()))
-pickle.dump(model, open('mymodel.pkl', 'wb'))
+model = TextScorer()
+model.train(final_train.values())
 
 # Summarizer
-#final_scores = {}
-#for bill_id, doc in final_test.items():
+final_scores = {}
+for bill_id, doc in final_test.items():
+    
+    scores = model.score_doc(doc)
+    #scores = [s['rouge-2']['p'] for s in doc['scores']]
 
-	# scores = model.score(doc)
+    final_sum = ' '.join(mmr_selection(doc['sent_texts'], scores, 13333))
 
-	# final_sum = ' '.join(greedy_summarize(doc['sent_texts'], scores))
+    rs = rouge.get_scores([final_sum],[doc['sum_text']])[0]
 
-	# rs = rouge.get_scores([final_sum],[doc['sum_text']])[0]
+    final_scores[bill_id] = rs
 
-	# final_scores[bill_id] = rs
 
+pickle.dump(final_scores, open(prefix + 'score_data/text_mmr_2000.pkl', 'wb'))
 
