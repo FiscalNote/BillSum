@@ -11,16 +11,17 @@ def greedy_summarize(sent_texts, weights, threshold=15, return_idx=False,
     # Sort indicies of weights
     sweights = np.argsort(weights)
     
-    sent_lens = [len(s) for s in sent_texts]
-
+    sent_lens = [len(' '.join(s)) for s in sent_texts]
+    
     # See how many we can add until we reach limit 
     top_idx = [] 
     total_chars = 0
 
     for i in reversed(sweights):
 
-        mylen = sent_lens[i]
-        
+
+        mylen = sent_lens[i] + 1 # Add 1 for space between sents
+
         # If sentence is too long - skip it
         if total_chars + mylen > summary_len:
             continue

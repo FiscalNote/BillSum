@@ -29,21 +29,25 @@ ALL_SUMMARIZERS = [('sumbasic', SumBasicSummarizer),
 
 rouge = Rouge()
 
-LANGUAGE = 'ENGLISH'
+LANGUAGE = 'en'
 stemmer = Stemmer(LANGUAGE)
 
 prefix = "/data/billsum/"
 prefix2 = "/data/billsum/score_data/baseline_scores/"
 
+# import warnings
+# warnings.filterwarnings("error")
 
 import sys 
 print(sys.getrecursionlimit())
 sys.setrecursionlimit(5000)
 
-for file in os.listdir(prefix)
-    path = os.path.join(prefix, file)
-
+for file in os.listdir('/data/billsum/clean_final/'):
+    path = '/data/billsum/clean_final/' + file
     data = []
+
+    if 'train' in file:
+        continue
 
     with jsonlines.open(path) as reader:
         for obj in reader: 
@@ -52,41 +56,42 @@ for file in os.listdir(prefix)
     all_scores = defaultdict(dict)
 
     i = 0
-    print(session)
 
     final_documents = {}
     for bill in data:
-
         i += 1
-        if i % 1000 == 0:
+        if i % 50 == 0:
             print(i)
             
-        summary = bill['summary']
-        doc = bill['text']
+        summary = bill['clean_summary']
+        doc = bill['clean_text']
         bill_id = bill['bill_id']
 
         doc2 = PlaintextParser(doc, Tokenizer(LANGUAGE)).document
         for name, Summarizer in ALL_SUMMARIZERS:
             try:
                 summarizer = Summarizer(stemmer)
-                summarizer.stop_words = get_stop_words(LANGUAGE)
+                #summarizer.stop_words = get_stop_words(LANGUAGE)
 
                 # Score all sentences -- then keep up to 2000 char
                 total_sentences = len(doc2.sentences)
                 sent_scores = summarizer(doc2, total_sentences)
 
-                sent_scores = [(s.sentence.words, s.rating) for s in sent_scores]
+                sent_scores = [(str(s.sentence), s.rating) for s in sent_scores]
 
                 # Pick best set with greedy
-                final_sents = greedy_summarize(*zip(*sent_scores))
-
-                final_sum = ' '.join(w for s in final_sents for w in s)
+                
+                summary_len = 2000
+                final_sents = greedy_summarize(*zip(*sent_scores), summary_len=summary_len)
+                final_sum = ' '.join(final_sents)
                 score = rouge.get_scores([final_sum],[summary])[0]
-
                 all_scores[bill_id][name] = score
             
             except KeyboardInterrupt:
                 raise KeyboardInterrupt
         
-    pickle.dump(all_scores, open(prefix2 + 'baseline_{}.pkl'.format(file), 'wb'))
+            #except:
+            #    print("Bad bill", bill_id)
+    
+    pickle.dump(all_scores, open(prefix2 + 'baseline_{}_2000.pkl'.format(file), 'wb'))
 
