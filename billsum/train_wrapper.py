@@ -51,7 +51,7 @@ pickle.dump(model, open('feature_scorer_model.pkl', 'wb'))
 
 ######### Evaluate Performance ################
 
-for locality in ['us', 'ca']
+for locality in ['us', 'ca']:
 
     test_data = pd.read_json(prefix + 'clean_final/{}_test_data_final.jsonl'.format(locality), lines=True)
     test_data.set_index('bill_id', inplace=True)

@@ -9,9 +9,6 @@ import numpy as np
 import operator
 import pickle
 
-#from fn_tldr.utils.process_svo import get_verb_object_pairs
-from fn_tldr.utils.utils import calculate_llr
-
 class GenericFeature(object):
     """
     An example of a feature generating class - contains the basics that all 
