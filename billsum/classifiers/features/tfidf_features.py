@@ -72,19 +72,6 @@ class DocTfidfF(GenericFeature):
         return [final_vec.mean(), final_vec.max()]
 
 
-# class HasSummaryActionF(GenericFeature):
-
-#     def __init__(self, path_to_actions='summary_vos.pkl'):
-#         self.is_sparse = False
-
-#         self.summary_actions = set(pickle.load(open(path_to_actions, 'rb')))
-    
-#     def make_features(self, i, sent):
-#         my_feats = set(get_action_pairs(sent))
-
-#         return [len(self.summary_actions.intersection(my_feats)) > 0]
-
-
 class KLSummaryF(GenericFeature):
     '''
     Features related to log likelihood and also log ratio 

@@ -109,11 +109,19 @@ if __name__ == '__main__':
 
     prefix = '/data/billsum/'
 
+
+    data = pd.read_json(prefix + 'clean_final/us_train_data_final.jsonl', lines=True)
+    sent_scores = prepare_labels(data)
+    pickle.dump(sent_scores, open(prefix + 'sent_data/us_train_sent_scores.pkl', 'wb'))
+
+
     data = pd.read_json(prefix + 'clean_final/us_test_data_final.jsonl', lines=True)
     sent_scores = prepare_labels(data)
+    pickle.dump(sent_scores, open(prefix + 'sent_data/us_test_sent_scores.pkl', 'wb'))
 
-    pickle.dump(sent_scores, open(prefix + 'clean_final/us_test_sent_scores.pkl', 'wb'))
 
-
+    data = pd.read_json(prefix + 'clean_final/ca_test_data_final.jsonl', lines=True)
+    sent_scores = prepare_labels(data)
+    pickle.dump(sent_scores, open(prefix + 'sent_data/ca_test_sent_scores.pkl', 'wb'))
 
    

@@ -13,8 +13,7 @@ class FeatureScorer:
 
     def __init__(self, classifier=None, score=('rouge-2', 'p')):
         
-        self.feats = [HasNerF(), NearSectionStartF(), IsLongF(), SecretaryF(), 
-                        SentencePosF(), GlobalTfidfF(), DocTfidfF(), KLSummaryF()]
+        self.feats = [ NearSectionStartF(), SentencePosF(), GlobalTfidfF(), DocTfidfF()]
 
 
         if classifier is None:
@@ -43,10 +42,8 @@ class FeatureScorer:
         # Transform sentences into our custom format
         new_docs = [list_to_doc(doc['doc']) for doc in train_docs]
 
-        sumdocs = [doc['sum_doc'] for doc in train_docs]
-
         for f in self.feats:
-            f.fit(new_docs, summaries=sumdocs)
+            f.fit(new_docs)
 
         all_features = [self.create_features(doc) for doc in new_docs]
 
@@ -116,7 +113,3 @@ class TextScorer:
         return y_pred
 
 
-
-if __name__ == '__main__':
-
-    data = pickle.load(open(''))
