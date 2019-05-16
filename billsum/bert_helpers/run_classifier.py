@@ -408,7 +408,7 @@ class SimplePreprocessor(DataProcessor):
     """Creates examples for the training and dev sets."""
     examples = []
     for (i, line) in enumerate(lines):
-      if i == 0:
+      if i == 0: # skip the header
         continue
       guid = "%s-%s" % (set_type, i)
       if set_type == "test":

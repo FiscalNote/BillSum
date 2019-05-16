@@ -1,5 +1,6 @@
 from billsum.post_process import greedy_summarize, mmr_selection
 
+import os
 import pandas as pd 
 import pickle 
 from rouge import Rouge
@@ -12,20 +13,20 @@ prefix = os.path.expanduser('~/BSDATA/')
 
 # Load in predictions
 
-prefix_classifier = "BERT_CLASSIFIER_DIR" # EDIT ME
+prefix_classifier = "" # EDIT ME
 
 
 ############## US ####################
 
 predictions = pd.read_csv(prefix_classifier + 'test_results.tsv', sep='\t', header=None)
-pos_pred = predictions[1].values
+pos_pred = predictions[1].values[1:]
 
 
 # Load in the sentence data
 
-sent_data = pickle.load(open(prefix + 'us_test_sent_scores.pkl', 'rb'))
+sent_data = pickle.load(open(prefix + 'sent_data/us_test_sent_scores.pkl', 'rb'))
 
-docs = pd.read_json(prefix + '/clean_final/us_test_data_final.jsonl', lines=True)
+docs = pd.read_json(prefix + 'clean_final/us_test_data_final.jsonl', lines=True)
 docs.set_index('bill_id', inplace=True)
 
 
@@ -36,24 +37,24 @@ doc_order = sorted(sent_data.keys())
 i = 0
 for bill_id in doc_order:
 
-	sents = sent_data[bill_id]
+    sents = sent_data[bill_id]
     
     tot_sent = len(sents)
 
     # Collect the predictions that correspond to this bill
-    ys = sent_scores[i:i+tot][1].values
-    i += tot
+    ys = pos_pred[i : i+tot_sent]
+    i += tot_sent
 
     # Get sent text
     mysents = [s[0] for s in sents]
-    
+
+
     final_sum = ' '.join(mmr_selection(mysents, ys))
     
-    score = rouge.get_scores([docs.loc[key].clean_summary], [final_sum])[0]
-    all_scores[key] = score
+    score = rouge.get_scores([docs.loc[bill_id].clean_summary], [final_sum])[0]
+    all_scores[bill_id] = score
 
 pickle.dump(prefix + 'score_data/us_bert_scores.pkl', 'rb')
-
 
 
 ############## CA ####################
@@ -64,9 +65,9 @@ pos_pred = predictions[1].values
 
 # Load in the sentence data
 
-sent_data = pickle.load(open(prefix + 'ca_test_sent_scores.pkl', 'rb'))
+sent_data = pickle.load(open(prefix + 'sent_data/ca_test_sent_scores.pkl', 'rb'))
 
-docs = pd.read_json(prefix + '/clean_final/ca_test_data_final.jsonl', lines=True)
+docs = pd.read_json(prefix + 'clean_final/ca_test_data_final.jsonl', lines=True)
 docs.set_index('bill_id', inplace=True)
 
 
@@ -77,13 +78,13 @@ doc_order = sorted(sent_data.keys())
 i = 0
 for bill_id in doc_order:
 
-	sents = sent_data[bill_id]
+    sents = sent_data[bill_id]
     
     tot_sent = len(sents)
 
     # Collect the predictions that correspond to this bill
-    ys = sent_scores[i:i+tot][1].values
-    i += tot
+    ys = pos_pred[i : i+tot_sent]
+    i += tot_sent
 
     # Get sent text
     mysents = [s[0] for s in sents]

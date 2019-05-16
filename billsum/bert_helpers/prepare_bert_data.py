@@ -22,7 +22,7 @@ to_save = []
 for key in doc_order:
 	doc = sent_data[key]
 	for sent in doc:
-		y = sent[2]['rouge-2']['p'] > 0.1 # Our label 
+		y = int(sent[2]['rouge-2']['p'] > 0.1) # Our label 
 		to_save.append([sent[0], y])
 
 # Save in tsv format
@@ -47,7 +47,7 @@ to_save = []
 for key in doc_order:
 	doc = sent_data[key]
 	for sent in doc:
-		y = sent[2]['rouge-2']['p'] > 0.1 # Our label 
+		y = int(sent[2]['rouge-2']['p'] > 0.1) # Our label 
 		to_save.append([sent[0], y])
 
 # Save in tsv format
@@ -65,7 +65,7 @@ to_save = []
 for key in doc_order:
 	doc = sent_data[key]
 	for sent in doc:
-		y = sent[2]['rouge-2']['p'] > 0.1 # Our label 
+		y = int(sent[2]['rouge-2']['p'] > 0.1) # Our label 
 		to_save.append([sent[0], y])
 
 # Save in tsv format
