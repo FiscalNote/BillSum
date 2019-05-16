@@ -1,7 +1,7 @@
 '''
 Wrapper to train and evaluate a supervised model
 '''
-from billsum.classifiers.classifier_scorer import TextScorer
+from billsum.classifiers.classifier_scorer import FeatureScorer
 from billsum.post_process import greedy_summarize, mmr_selection
 from billsum.utils.sentence_utils import list_to_doc
 
@@ -12,7 +12,7 @@ import pickle
 from rouge import Rouge
 rouge = Rouge()
 
-prefix = '/Users/anastassiakornilova/BSDATA/'
+prefix = os.path.expanduser('~/BSDATA/')
 
 
 ##########     Load in the data ###############
@@ -53,6 +53,7 @@ pickle.dump(model, open('feature_scorer_model.pkl', 'wb'))
 
 for locality in ['us', 'ca']:
 
+    # Load in the data
     test_data = pd.read_json(prefix + 'clean_final/{}_test_data_final.jsonl'.format(locality), lines=True)
     test_data.set_index('bill_id', inplace=True)
     test_sents = pickle.load(open(prefix + 'sent_data/{}_test_sent_scores.pkl'.format(locality), 'rb'))
@@ -76,17 +77,18 @@ for locality in ['us', 'ca']:
 
     del test_data, test_sents, us_test_summary
 
-    # Summarizer
+    # Evaluation
     final_scores = {}
     for bill_id, doc in final_test.items():
         
+        # Create and score features
         scores = model.score_doc(doc)
 
-        final_sum = ' '.join(mmr_selection(doc['sent_texts'], scores, 13333))
+        final_sum = ' '.join(mmr_selection(doc['sent_texts'], scores))
 
         rs = rouge.get_scores([final_sum],[doc['sum_text']])[0]
 
         final_scores[bill_id] = rs
 
-    pickle.dump(final_scores, open('{}_test_feature_model_res.pkl'.format(locality), 'wb'))
+    pickle.dump(final_scores, open('score_data/{}_test_feature_model_res.pkl'.format(locality), 'wb'))
 

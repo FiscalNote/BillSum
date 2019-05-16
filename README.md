@@ -16,11 +16,13 @@ Install sumy and run `bill_sum/sumy_baselines.py`
 
 ## Preparing labeled data
 
-Run `billsum/data_prep/label_sentences.py` to create labeled dataset.
+1. Run `billsum/data_prep/clean_text.py` to clean up the whitespace formatting in the dataset. Outputs new jsonlines files with 'clean_text' field + original fields to `PREFIX/clean_data`
+
+2. Run `billsum/data_prep/label_sentences.py` to create labeled dataset.
 
 This script takes each document, splits it into sentences, processes them with Spacy to get useful syntactic features and calculates the Rouge Score relative to the summary.
 
-Outputs for each dataset part will be a pickle file with a dict of (bill_id, sentence data) pairs
+Outputs for each dataset part will be a pickle file with a dict of (bill_id, sentence data) pairs. (Stored under `PREFIX/sent_data/`) directory
 
 ```
 Bill_id --> [
@@ -41,9 +43,9 @@ Bill_id --> [
 
 ## Running Bert Models
 
-0. Clone https://github.com/google-research/bert
+0. Clone https://github.com/google-research/bert. Replace the `run_classifier.py` file with `billsum/bert_helpers/run_classifier.py` (adds custom code to read data in and out of files)
 
-1. Create train.tsv / test.tsv files with `billsum/bert_helpers/prep_bert.py`. Put these into a separate directory (BERT_DATA_DIR)
+1. Create train.tsv / test.tsv files with `billsum/bert_helpers/prep_bert.py`. These will be stored under `PREFIX/bert_data` (set `$BERT_DATA_DIR` to point here)
 
 2. Download the [Bert-Large, Uncased](https://storage.googleapis.com/bert_models/2018_10_18/uncased_L-24_H-1024_A-16.zip) model. 
 
@@ -53,8 +55,8 @@ Bill_id --> [
 
 ```
 python create_pretraining_data.py \
-  --input_file=BERT_DATA_DIR/all_texts_us_train.txt \
-  --output_file=BERT_DATA_DIR/all_texts_us_train.tfrecord \
+  --input_file=$BERT_DATA_DIR/all_texts_us_train.txt \
+  --output_file=$BERT_DATA_DIR/all_texts_us_train.tfrecord \
   --vocab_file=$BERT_BASE_DIR/vocab.txt \
   --do_lower_case=True \
   --max_seq_length=128 \
@@ -65,8 +67,8 @@ python create_pretraining_data.py \
 ```
 ```
 python run_pretraining.py \
-  --input_file=BERT_DATA_DIR/all_texts_us_train.tfrecord\
-  --output_dir=BERT_MODEL_DIR \
+  --input_file=$BERT_DATA_DIR/all_texts_us_train.tfrecord\
+  --output_dir=$BERT_MODEL_DIR \
   --do_train=True \
   --do_eval=True \
   --bert_config_file=$BERT_BASE_DIR/bert_config.json \
@@ -79,9 +81,9 @@ python run_pretraining.py \
   --learning_rate=2e-5
 ```
 
-`BERT_MODEL_DIR` is the directory where you want to store your pretrained model.
+`$BERT_MODEL_DIR` is the directory where you want to store your pretrained model.
 
-This will take a while to run. O
+This will take a while to run. 
 
 4. To train the classifier model run (from bert repo):
 
@@ -90,19 +92,33 @@ python run_classifier.py
 			--task_name=simple
 			--do_train=true   
 			--do_predict=true   
-			--data_dir=BERT_DATA_DIR   
+			--data_dir=$BERT_DATA_DIR   
 			--vocab_file=$BERT_BASE_DIR/vocab.txt   
 			--bert_config_file=$BERT_BASE_DIR/bert_config.json   
-			--init_checkpoint=BERT_MODEL_DIR/model.ckpt-20000   
+			--init_checkpoint=$BERT_MODEL_DIR/model.ckpt-20000   
 			--max_seq_length=128  
 			--train_batch_size=32   
 			--num_train_epochs=3.0   
-			--output_dir=BERT_CLASSIFIER_DIR
+			--output_dir=$BERT_CLASSIFIER_DIR
 ```
 
-Change `BERT_CLASSIFIER_DIR` to the directory where you want to store the classifier. This script will create a model in the `BERT_CLASSIFIER_DIR` and store the sentence predictions in `BERT_CLASSIFIER_DIR/test_results.tsv`
+Change `BERT_CLASSIFIER_DIR` to the directory where you want to store the classifier - should be different from pretraining directory. This script will create a model in the `BERT_CLASSIFIER_DIR` and store the sentence predictions in `BERT_CLASSIFIER_DIR/` dir.
 
 5. Evaluate results using `bill_sum/bert_helpers/evaluate_bert.py`. Change the prefix variable to point to `BERT_CLASSIFIER_DIR` from above.
+
+Results will be stored under `PREFIX/score_data/`
+
+
+## Running feature classifier
+
+Change the prefix variable in `bill_sum/train_wrapper.py` to your data prefix, then run the script. Results will be stored under `PREFIX/score_data/`
+
+
+## Final Result aggregation
+
+
+
+
 
 
 

@@ -1,7 +1,16 @@
-# Methods to create final summaries froms cored sentences
+'''
+Methods to create final summaries from scored sentences
+'''
+
+from functools import reduce
 import numpy as np 
 import operator
+import re
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import minmax_scale
+
+word_counter = re.compile('[A-Za-z][A-Za-z]+')
 
 MAX_SUMMARY_LENGTH = 2000
 
@@ -14,9 +23,6 @@ def greedy_summarize(sent_texts, weights, threshold=15, return_idx=False,
     sent_lens = [len(s) for s in sent_texts]
    
     my_len = sum(sent_lens)
-
-    #summary_len = int(my_len * .15)
-
  
     # See how many we can add until we reach limit 
     top_idx = [] 
@@ -31,6 +37,7 @@ def greedy_summarize(sent_texts, weights, threshold=15, return_idx=False,
         if total_chars + mylen > summary_len:
             continue
         
+        # Ignore short sentences
         # if len(sent_texts[i].split()) < 8:
         #     continue # 2 short
 
@@ -46,26 +53,14 @@ def greedy_summarize(sent_texts, weights, threshold=15, return_idx=False,
     return np.array(sent_texts)[final_idx]
 
 
-
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.preprocessing import minmax_scale
-
-from functools import reduce
-import operator
-import re
-word_counter = re.compile('[A-Za-z][A-Za-z]+')
-
-
-def mmr_selection(sents, scores, doc_chars, max_fraction=0.15, L=0.7, min_words=5):
+def mmr_selection(sents, scores, max_chars=MAX_SUMMARY_LENGTH, L=0.7, min_words=5):
     '''
-    Pick best sentences using MMR algo - up to 15% of words.
-    "Query similarity" is the score.
+    Pick best sentences using MMR algo 
+    
+    L defines the balance of "score" vs "sim to summary so far"
     '''
 
     sent_wc = [reduce(operator.add, (1 for _ in word_counter.finditer(s)), 0) for s in sents]
-
-    max_chars = int(doc_chars * max_fraction)
 
     # Rescale the scores and prepare sims 
 
@@ -87,7 +82,8 @@ def mmr_selection(sents, scores, doc_chars, max_fraction=0.15, L=0.7, min_words=
             if i in used_sent_idx:
                 continue
 
-            if sent_wc[i] < min_words or '<SECTION-HEADER>' in sents[i]: #or 'This Act may' in sents[i]:
+            # Ignore section headers and short sentences
+            if sent_wc[i] < min_words or '<SECTION-HEADER>' in sents[i]: 
                 continue
 
             mychars = len(sents[i])
@@ -95,8 +91,10 @@ def mmr_selection(sents, scores, doc_chars, max_fraction=0.15, L=0.7, min_words=
                 continue
 
             s1 = scores[i]
-            # if s1 < 0.4:
-                # continue
+          
+            # if s1 < .1: 
+            #     continue
+
             # Find max sim of sentences already in sum
             if len(used_sent_idx) == 0:
                 s2 = 0
@@ -118,4 +116,6 @@ def mmr_selection(sents, scores, doc_chars, max_fraction=0.15, L=0.7, min_words=
         cur_chars += cur_best_chars
         final_sents.append(sents[cur_best])
 
-    return final_sents #, used_sent_idx
+    sorted_sents = [s[1] for s in sorted(zip(used_sent_idx, final_sents))]
+    return sorted_sents #final_sents #, used_sent_idx
+    

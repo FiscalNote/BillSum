@@ -11,17 +11,17 @@ from sklearn.linear_model import LogisticRegression
 
 class FeatureScorer:
 
-    def __init__(self, classifier=None, score=('rouge-2', 'p')):
+    def __init__(self, classifier=None, score_type=('rouge-2', 'p')):
         
         self.feats = [ NearSectionStartF(), SentencePosF(), GlobalTfidfF(), DocTfidfF()]
 
 
         if classifier is None:
-            self.clf = RandomForestClassifier(min_sample_split=10, n_estimators=20)
+            self.clf = RandomForestClassifier(min_samples_split=10, n_estimators=20)
         else:
             self.clf = classifier
 
-        self.score_type = score
+        self.score_type = score_type
 
         self.score_threshold = 0.1
 
@@ -58,7 +58,7 @@ class FeatureScorer:
         self.clf.fit(X, y_train2)
         print("Classifier fit:", self.clf.score(X, y_train2), y_train2.mean())
 
-    def score(self, doc):
+    def score_doc(self, doc):
 
         doc = list_to_doc(doc['doc'])
         X = self.create_features(doc)
