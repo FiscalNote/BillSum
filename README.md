@@ -18,7 +18,9 @@ For all the experiments described in the paper, the texts were first cleaned usi
 
 ## Sumy baselines
 
-Install sumy (`pip install sumy`) and run `bill_sum/sumy_baselines.py`
+1. Clone [sumy](git@github.com:akornilo/sumy.git) and checkout the branch `ak_fork` (This is a minor modification on the original sumy library that allows it to work with my sentence selection logic).
+2. In that directory run `pip install -e .`
+3. From this directory, run `bill_sum/sumy_baselines.py`
 
 ## Supervised Experiments
 
