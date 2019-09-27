@@ -4,19 +4,27 @@ US Bill Summarization Corpus -- material in association with the paper
 
 **Accessing the Dataset**: Download here
 
-For this guide, `PREFIX` refers to the base directory for all the data.
 
+# Set-up
+
+1. Set the env `BILLSUM_PREFIX` to the base directory for all the data. (Download from link above)
+2. Set `PYTHONPATH=.` to run code from this directory.
+3. Install packages from `environment.lst` (we used conda, but you should be able to use pip
 ---
 
-For all the experiments described in the paper, the texts were first cleaned using the script `billsum/data_prep/clean_text.py`. Results will be saved into the `PREFIX/clean_final` directory.
+# Experiments
+
+For all the experiments described in the paper, the texts were first cleaned using the script `billsum/data_prep/clean_text.py`. Results will be saved into the `BILLSUM_PREFIX/clean_final` directory.
 
 ## Sumy baselines
 
-Install sumy and run `bill_sum/sumy_baselines.py`
+Install sumy (`pip install sumy`) and run `bill_sum/sumy_baselines.py`
 
-## Preparing labeled data
+## Supervised Experiments
 
-1. Run `billsum/data_prep/clean_text.py` to clean up the whitespace formatting in the dataset. Outputs new jsonlines files with 'clean_text' field + original fields to `PREFIX/clean_data`
+### Preparing the data
+
+1. Run `billsum/data_prep/clean_text.py` to clean up the whitespace formatting in the dataset. Outputs new jsonlines files with 'clean_text' field + original fields to `BILLSUM_PREFIX/clean_data`
 
 2. Run `billsum/data_prep/label_sentences.py` to create labeled dataset.
 
@@ -112,18 +120,13 @@ Results will be stored under `PREFIX/score_data/`
 
 ## Running feature classifier + ensemble
 
-Change the prefix variable in `bill_sum/train_wrapper.py` to your data prefix, then run the script. Results will be stored under `PREFIX/score_data/`
+Run `bill_sum/train_wrapper.py`. Results will be stored under `BILLSUM_PREFIX/score_data/`
 
 To get computations for the ensemble method run `billsum/evaluate_ensemble` (fix prefixes as before)
 
 ## Final Result aggregation
 
 Run `billsum/compute_statistics.py` - will output summaries of results to terminal (also computers the oracle scores).
-
-
-
-
-
 
 
 
