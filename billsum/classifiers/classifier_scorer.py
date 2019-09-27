@@ -17,7 +17,7 @@ class FeatureScorer:
 
 
         if classifier is None:
-            self.clf = RandomForestClassifier(min_samples_split=10, n_estimators=20)
+            self.clf = RandomForestClassifier(min_samples_split=10, n_estimators=50)
         else:
             self.clf = classifier
 
@@ -54,7 +54,7 @@ class FeatureScorer:
 
         y_train = np.array([y[rtype][mtype] for d in train_docs for y in d['scores']])
         y_train2 = y_train > self.score_threshold
-        return X, y_train2
+
         self.clf.fit(X, y_train2)
         print("Classifier fit:", self.clf.score(X, y_train2), y_train2.mean())
 

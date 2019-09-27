@@ -75,7 +75,7 @@ for locality in ['us', 'ca']:
                                'sent_texts': sent_texts, 'title': title, 
                                'textlen': len(test_data.loc[bill_id]['text'])}
 
-    del test_data, test_sents, us_test_summary
+    del test_data, test_sents
 
     # Evaluation
     final_scores = {}

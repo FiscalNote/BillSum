@@ -84,7 +84,7 @@ for file in os.listdir('/data/billsum/clean_final/'):
                 summary_len = 2000
                 final_sents = greedy_summarize(*zip(*sent_scores), summary_len=summary_len)
                 final_sum = ' '.join(final_sents)
-                score = rouge.get_scores([final_sum],[summary])[0]
+                score = rouge.get_scores([summary], [final_sum])[0]
                 all_scores[bill_id][name] = score
             
             except KeyboardInterrupt:

@@ -18,7 +18,7 @@ prefix_classifier = "" # EDIT ME
 
 ############## US ####################
 
-predictions = pd.read_csv(prefix_classifier + 'test_results.tsv', sep='\t', header=None)
+predictions = pd.read_csv(prefix_classifier + 'us_test_results.tsv', sep='\t', header=None)
 pos_pred = predictions[1].values[1:]
 
 
@@ -35,7 +35,7 @@ all_scores = {}
 doc_order = sorted(sent_data.keys())
 
 i = 0
-for bill_id in doc_order:
+for bill_id in sent_data:
 
     sents = sent_data[bill_id]
     
@@ -48,19 +48,19 @@ for bill_id in doc_order:
     # Get sent text
     mysents = [s[0] for s in sents]
 
-
     final_sum = ' '.join(mmr_selection(mysents, ys))
     
-    score = rouge.get_scores([docs.loc[bill_id].clean_summary], [final_sum])[0]
+    score = rouge.get_scores([final_sum], [docs.loc[bill_id].clean_summary])[0]
     all_scores[bill_id] = score
+    #rint(score)
 
-pickle.dump(prefix + 'score_data/us_bert_scores.pkl', 'rb')
+pickle.dump(all_scores, open(prefix + 'score_data/us_bert_scores.pkl', 'wb'))
 
 
 ############## CA ####################
 
 predictions = pd.read_csv(prefix_classifier + 'ca_test_results.tsv', sep='\t', header=None)
-pos_pred = predictions[1].values
+pos_pred = predictions[1].values[1:]
 
 
 # Load in the sentence data
@@ -76,7 +76,7 @@ all_scores = {}
 doc_order = sorted(sent_data.keys())
 
 i = 0
-for bill_id in doc_order:
+for bill_id in sent_data:
 
     sents = sent_data[bill_id]
     
@@ -91,7 +91,8 @@ for bill_id in doc_order:
     
     final_sum = ' '.join(mmr_selection(mysents, ys))
     
-    score = rouge.get_scores([docs.loc[key].clean_summary], [final_sum])[0]
-    all_scores[key] = score
+    score = rouge.get_scores([docs.loc[bill_id].clean_summary], [final_sum])[0]
+    all_scores[bill_id] = score
 
-pickle.dump(prefix + 'score_data/ca_bert_scores.pkl', 'rb')
+pickle.dump(all_scores, open(prefix + 'score_data/ca_bert_scores.pkl', 'wb'))
+

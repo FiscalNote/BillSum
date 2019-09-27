@@ -92,6 +92,7 @@ python run_classifier.py
 			--task_name=simple
 			--do_train=true   
 			--do_predict=true   
+			--do_predict_ca=true   
 			--data_dir=$BERT_DATA_DIR   
 			--vocab_file=$BERT_BASE_DIR/vocab.txt   
 			--bert_config_file=$BERT_BASE_DIR/bert_config.json   
@@ -109,14 +110,15 @@ Change `BERT_CLASSIFIER_DIR` to the directory where you want to store the classi
 Results will be stored under `PREFIX/score_data/`
 
 
-## Running feature classifier
+## Running feature classifier + ensemble
 
 Change the prefix variable in `bill_sum/train_wrapper.py` to your data prefix, then run the script. Results will be stored under `PREFIX/score_data/`
 
+To get computations for the ensemble method run `billsum/evaluate_ensemble` (fix prefixes as before)
 
 ## Final Result aggregation
 
-
+Run `billsum/compute_statistics.py` - will output summaries of results to terminal (also computers the oracle scores).
 
 
 

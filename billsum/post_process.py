@@ -53,7 +53,7 @@ def greedy_summarize(sent_texts, weights, threshold=15, return_idx=False,
     return np.array(sent_texts)[final_idx]
 
 
-def mmr_selection(sents, scores, max_chars=MAX_SUMMARY_LENGTH, L=0.7, min_words=5):
+def mmr_selection(sents, scores, max_chars=MAX_SUMMARY_LENGTH, L=0.7, min_words=6):
     '''
     Pick best sentences using MMR algo 
     
@@ -82,6 +82,7 @@ def mmr_selection(sents, scores, max_chars=MAX_SUMMARY_LENGTH, L=0.7, min_words=
             if i in used_sent_idx:
                 continue
 
+
             # Ignore section headers and short sentences
             if sent_wc[i] < min_words or '<SECTION-HEADER>' in sents[i]: 
                 continue
@@ -92,7 +93,7 @@ def mmr_selection(sents, scores, max_chars=MAX_SUMMARY_LENGTH, L=0.7, min_words=
 
             s1 = scores[i]
           
-            # if s1 < .1: 
+            # if s1 < .2: 
             #     continue
 
             # Find max sim of sentences already in sum
@@ -118,4 +119,4 @@ def mmr_selection(sents, scores, max_chars=MAX_SUMMARY_LENGTH, L=0.7, min_words=
 
     sorted_sents = [s[1] for s in sorted(zip(used_sent_idx, final_sents))]
     return sorted_sents #final_sents #, used_sent_idx
-    
+
