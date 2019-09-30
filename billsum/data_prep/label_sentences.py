@@ -24,13 +24,14 @@ def prepare_summary(bill_data):
     final_summary_data = {}
     i = 0
 
-    for bill in bill_data:
+    for _, bill in bill_data.iterrows():
+
         bill_id = bill['bill_id']
 
         # Keep track of progress
         i += 1
         if i % 100 == 0:
-            print(i, len(final_scores))
+            print("Processed {} summaries".format(i))
 
         text_nlp = nlp(bill['summary'])
 
@@ -75,9 +76,10 @@ def prepare_labels(bill_data,  min_sent_words=5):
         bill_id = bill['bill_id']
 
         # Keep track of progress
-        i += 1
         if i % 100 == 0:
             print(i, len(final_scores))
+
+        i += 1
 
         text_nlp = nlp(bill['clean_text'])
 
@@ -99,6 +101,7 @@ def prepare_labels(bill_data,  min_sent_words=5):
 
                 sent_data.append((sent.string, text_feats, rscores))
 
+
         final_scores[bill_id] = sent_data
 
     return final_scores
@@ -107,21 +110,37 @@ def prepare_labels(bill_data,  min_sent_words=5):
 if __name__ == '__main__':
     import pandas as pd 
 
-    prefix = '/data/billsum/'
+    prefix = os.environ['BILLSUM_PREFIX']
 
+    if not prefix.endswith('/'):
+        prefix += '/'
 
+    #os.mkdir(prefix + 'sent_data/')
+
+    print("Preparing US Train")
     data = pd.read_json(prefix + 'clean_final/us_train_data_final.jsonl', lines=True)
     sent_scores = prepare_labels(data)
     pickle.dump(sent_scores, open(prefix + 'sent_data/us_train_sent_scores.pkl', 'wb'))
 
+    sum_sents = prepare_summary(data)
+    pickle.dump(sum_sents, open(prefix + 'sent_data/us_train_sum_sents.pkl', 'wb'))
 
+
+    print("Preparing US Test")
     data = pd.read_json(prefix + 'clean_final/us_test_data_final.jsonl', lines=True)
     sent_scores = prepare_labels(data)
     pickle.dump(sent_scores, open(prefix + 'sent_data/us_test_sent_scores.pkl', 'wb'))
 
+    sum_sents = prepare_summary(data)
+    pickle.dump(sum_sents, open(prefix + 'sent_data/us_test_sum_sents.pkl', 'wb'))
 
+
+    print("Preparing CA Test")
     data = pd.read_json(prefix + 'clean_final/ca_test_data_final.jsonl', lines=True)
     sent_scores = prepare_labels(data)
     pickle.dump(sent_scores, open(prefix + 'sent_data/ca_test_sent_scores.pkl', 'wb'))
 
-   
+    sum_sents = prepare_summary(data)
+    pickle.dump(sum_sents, open(prefix + 'sent_data/ca_test_sum_sents.pkl', 'wb'))
+
+

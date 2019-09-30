@@ -107,10 +107,25 @@ def clean_text(text):
 
 
 if __name__ == '__main__':
-    for file in os.listdir('data_final'):
-        path = 'data_final/' + file
 
-        data = pd.read_json(path, lines=True)
+
+    prefix = os.environ['BILLSUM_PREFIX']
+    path = os.path.join(prefix, 'data_final')
+
+    # Create dir where data should be saved
+    save_path = os.path.join(prefix, 'clean_final')
+    #os.mkdir(save_path)
+
+    for file in os.listdir(path):
+        if '.jsonl' not in file:
+            continue
+
+
+        file_path = os.path.join(path,  file)
+
+        print("Now processing", file_path)
+
+        data = pd.read_json(file_path, lines=True)
 
         data['clean_text'] = data.text.map(clean_text)
         
@@ -118,7 +133,9 @@ if __name__ == '__main__':
 
         data['clean_title'] = data.title.map(clean_text)
 
-        data.to_json('clean_final/' + file, lines=True, orient='records')
+        save_path = os.path.join(prefix, 'clean_final', file)
+
+        data.to_json(save_path, lines=True, orient='records')
 
 
 

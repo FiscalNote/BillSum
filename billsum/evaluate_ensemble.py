@@ -11,7 +11,11 @@ import pickle
 from rouge import Rouge
 rouge = Rouge()
 
-prefix = os.path.expanduser('~/BSDATA/')
+
+prefix = os.environ['BILLSUM_PREFIX']
+if not prefix.endswith('/'):
+    prefix += '/'
+
 
 # Note: this script assumes the data was generated using prepare_bert_data.py
 # The two go together, because we want the output predictions to match the docs
@@ -21,7 +25,7 @@ prefix = os.path.expanduser('~/BSDATA/')
 prefix_classifier = "" # EDIT ME
 
 # Stored during the train_wrapper.py script
-feature_model = pickle.load(open('feature_scorer_model.pkl', 'rb'))
+feature_model = pickle.load(open(prefix + '/models/feature_scorer_model.pkl', 'rb'))
 
 ############## US ####################
 
@@ -29,7 +33,7 @@ feature_model = pickle.load(open('feature_scorer_model.pkl', 'rb'))
 for locality in ['us', 'ca']:
 
 
-    predictions = pd.read_csv(prefix_classifier + '{}_test_results.tsv'.format(locality), sep='\t', header=None)
+    predictions = pd.read_csv('random_crap/{}_test_results.tsv'.format(locality), sep='\t', header=None)
     bert_pred = predictions[1].values[1:]
 
 
@@ -70,7 +74,7 @@ for locality in ['us', 'ca']:
         
         rscore = rouge.get_scores([docs.loc[bill_id].clean_summary], [final_sum])[0]
         all_scores[bill_id] = rscore
-
+ 
 
     pickle.dump(all_scores, open(prefix + 'score_data/{}_ensemble_scores.pkl'.format(locality), 'wb'))
 

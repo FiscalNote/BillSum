@@ -32,8 +32,8 @@ rouge = Rouge()
 LANGUAGE = 'en'
 stemmer = Stemmer(LANGUAGE)
 
-prefix = "/data/billsum/"
-prefix2 = "/data/billsum/score_data/baseline_scores/"
+prefix = os.environ['BILLSUM_PREFIX']
+prefix2 = os.path.join(prefix,"score_data/baseline_scores/")
 
 # import warnings
 # warnings.filterwarnings("error")
@@ -42,8 +42,8 @@ import sys
 print(sys.getrecursionlimit())
 sys.setrecursionlimit(5000)
 
-for file in os.listdir('/data/billsum/clean_final/'):
-    path = '/data/billsum/clean_final/' + file
+for file in os.listdir(os.path.join(prefix, 'clean_final')):
+    path = os.path.join(os.path.join(prefix, 'clean_final', file))
     data = []
 
     if 'train' in file:
@@ -76,7 +76,6 @@ for file in os.listdir('/data/billsum/clean_final/'):
                 # Score all sentences -- then keep up to 2000 char
                 total_sentences = len(doc2.sentences)
                 sent_scores = summarizer(doc2, total_sentences)
-
                 sent_scores = [(str(s.sentence), s.rating) for s in sent_scores]
 
                 # Pick best set with greedy

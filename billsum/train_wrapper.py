@@ -6,22 +6,31 @@ from billsum.post_process import greedy_summarize, mmr_selection
 from billsum.utils.sentence_utils import list_to_doc
 
 import numpy as np
+import os
 import pandas as pd
 import pickle
 
 from rouge import Rouge
 rouge = Rouge()
 
-prefix = os.path.expanduser('~/BSDATA/')
+prefix = os.environ['BILLSUM_PREFIX']
 
+if not prefix.endswith('/'):
+    prefix += '/'
 
 ##########     Load in the data ###############
 us_train = pd.read_json(prefix + 'clean_final/us_train_data_final.jsonl', lines=True)
 us_train.set_index('bill_id', inplace=True)
 us_train_sents = pickle.load(open(prefix + 'sent_data/us_train_sent_scores.pkl', 'rb'))
-us_train_summary = pickle.load(open(prefix + 'clean_final/us_train_summary_sents.pkl', 'rb'))
 
-final_train = {}
+us_train_sum_sents = pickle.load(open(prefix + 'sent_data/us_train_sum_sents.pkl', 'rb'))
+
+
+# Store data in the same order
+final_train = []
+final_train_sum = []
+
+i = 0
 for bill_id, sents in us_train_sents.items():
 
     doc = [v[1] for v in sents]
@@ -34,20 +43,21 @@ for bill_id, sents in us_train_sents.items():
 
     title = us_train.loc[bill_id]['clean_title']
 
-    mysum = us_train_summary[bill_id]
+    final_train.append({'doc': doc, 'scores': scores, 'sum_text': summary, 
+                             'sent_texts': sent_texts, 'title': title})
 
-    final_train[bill_id] = {'doc': doc, 'scores': scores, 'sum_text': summary, 
-                             'sent_texts': sent_texts, 'title': title, 'sum_doc': mysum}
+    final_train_sum.append(us_train_sum_sents[bill_id])
 
-del us_train, us_train_sents, us_train_summary
+del us_train, us_train_sents, us_train_sum_sents
 
 ######## Train a model ###################
 
 model = FeatureScorer()
-model.train(final_train.values())
+model.train(final_train, final_train_sum)
 
-pickle.dump(model, open('feature_scorer_model.pkl', 'wb'))
+pickle.dump(model, open(prefix + 'models/feature_scorer_model.pkl', 'wb'))
 
+#model = pickle.load(open(prefix + 'models/feature_scorer_model.pkl', 'rb'))
 
 ######### Evaluate Performance ################
 
@@ -55,6 +65,11 @@ for locality in ['us', 'ca']:
 
     # Load in the data
     test_data = pd.read_json(prefix + 'clean_final/{}_test_data_final.jsonl'.format(locality), lines=True)
+
+    # CA data gets formatted weird - fix just in case
+    if 'bill_id' not in test_data.columns:
+        test_data['bill_id'] = test_data['external_id']
+
     test_data.set_index('bill_id', inplace=True)
     test_sents = pickle.load(open(prefix + 'sent_data/{}_test_sent_scores.pkl'.format(locality), 'rb'))
 
@@ -90,5 +105,5 @@ for locality in ['us', 'ca']:
 
         final_scores[bill_id] = rs
 
-    pickle.dump(final_scores, open('score_data/{}_test_feature_model_res.pkl'.format(locality), 'wb'))
+    pickle.dump(final_scores, open(prefix + 'score_data/{}_test_feature_model_res.pkl'.format(locality), 'wb'))
 

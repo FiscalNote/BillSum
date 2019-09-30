@@ -13,8 +13,7 @@ class FeatureScorer:
 
     def __init__(self, classifier=None, score_type=('rouge-2', 'p')):
         
-        self.feats = [ NearSectionStartF(), SentencePosF(), GlobalTfidfF(), DocTfidfF()]
-
+        self.feats = [ NearSectionStartF(), SentencePosF(), GlobalTfidfF(), DocTfidfF(), KLSummaryF()]
 
         if classifier is None:
             self.clf = RandomForestClassifier(min_samples_split=10, n_estimators=50)
@@ -37,13 +36,13 @@ class FeatureScorer:
 
         return all_feats
 
-    def train(self, train_docs):
+    def train(self, train_docs, summaries=None):
         
         # Transform sentences into our custom format
         new_docs = [list_to_doc(doc['doc']) for doc in train_docs]
 
         for f in self.feats:
-            f.fit(new_docs)
+            f.fit(new_docs, summaries)
 
         all_features = [self.create_features(doc) for doc in new_docs]
 
