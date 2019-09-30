@@ -141,6 +141,10 @@ def prepare_html_text(html_text):
         i = text.index('Joint Resolution')
         text = text[i + len('Joint Resolution'):]
 
+    if 'Joint Resolution' in text:
+        i = text.index('Joint Resolution')
+        text = text[i + len('Joint Resolution'):]
+
     # Clean off white space from both ends
     text = text.strip()
 
@@ -148,6 +152,7 @@ def prepare_html_text(html_text):
     if 'Union Calendar' in text:
         i = text.index('Union Calendar')
         text = text[:i]
+
     return text
 
 def prepare_bill(bill_dir, session):
@@ -171,6 +176,18 @@ def prepare_bill(bill_dir, session):
     #     raise ValueError('No data file for bill ')
 
     final_data = {}
+
+    # Extract basic bill data
+    if os.path.isfile(os.path.join(bill_dir, 'data.json')):
+        data = json.load(open(os.path.join(bill_dir, 'data.json')))
+        final_data = extract_data_json(data)
+    elif os.path.isfile(os.path.join(bill_dir, 'data.xml')):
+        f = os.path.join(bill_dir, 'data.xml')
+        bill_data = ET.parse(f).getroot()
+        final_data = extract_data_xml(bill_data)
+    else:
+        raise ValueError('No data file for bill ')
+
     # Get the bill id from the path - its the final subfolder
     billid = os.path.basename(os.path.normpath(bill_dir))
     final_data['bill_id'] = str(session) + '_' + billid 
@@ -206,7 +223,7 @@ if __name__ == '__main__':
     for ses in range(107, 113):
 
         # Change to your prefix
-        path = 'data/all_data/{}/bills/'.format(ses)
+        path = '/data/final_data/congress/{}/bills/'.format(ses)
 
         final_dataset = []
         i = 0
@@ -218,7 +235,7 @@ if __name__ == '__main__':
             subpath = os.path.join(path, btype)
             if 'res' in btype:
                 continue
-            
+
             for file in os.listdir(subpath):
                 
                 billpath = os.path.join(subpath, file)
@@ -237,7 +254,9 @@ if __name__ == '__main__':
                         z += 1
 
         print(j, i, z)
-        with open('all_data_{}.jsonl'.format(ses), 'w') as f:
+
+        with open('/data/final_data/final/final_data_{}.jsonl'.format(ses), 'w') as f:
+
             writer = jsonlines.Writer(f)
             writer.write_all(final_dataset)
 
