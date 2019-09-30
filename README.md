@@ -9,9 +9,10 @@ Information on how the dataset was collected is under [BillSum_Data_Documentatio
 
 # Set-up
 
-1. Set the env `BILLSUM_PREFIX` to the base directory for all the data. (Download from link above)
-2. Set `PYTHONPATH=.` to run code from this directory.
-3. Install packages from `environment.lst` (we used conda, but you should be able to use pip
+1. Install python dependencies (If using conda, use env.lst. If using pip, use requirements.txt)
+2. Set the env `BILLSUM_PREFIX` to the base directory for all the data. (Download from link above)
+3. Set `PYTHONPATH=.` to run code from this directory.
+4. Install packages from `environment.lst` (we used conda, but you should be able to use pip
 ---
 
 # Experiments
