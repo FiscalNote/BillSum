@@ -137,6 +137,9 @@ def prepare_html_text(html_text):
     if 'Concurrent Resolution' in text:
         i = text.index('Concurrent Resolution')
         text = text[i + len('Concurrent Resolution'):]
+    if 'Joint Resolution' in text:
+        i = text.index('Joint Resolution')
+        text = text[i + len('Joint Resolution'):]
 
     if 'Joint Resolution' in text:
         i = text.index('Joint Resolution')
@@ -159,6 +162,20 @@ def prepare_bill(bill_dir, session):
 
     Takes in session to make a more specific billid
     '''
+    print(bill_dir)
+    # # Extract basic bill data
+    # if os.path.isfile(os.path.join(bill_dir, 'data.json')):
+    #     data = json.load(open(os.path.join(bill_dir, 'data.json')))
+    #     final_data = extract_data_json(data)
+
+    # elif os.path.isfile(os.path.join(bill_dir, 'data.xml')):
+    #     f = os.path.join(bill_dir, 'data.xml')
+    #     bill_data = ET.parse(f).getroot()
+    #     final_data = extract_data_xml(bill_data)
+    # else:
+    #     raise ValueError('No data file for bill ')
+
+    final_data = {}
 
     # Extract basic bill data
     if os.path.isfile(os.path.join(bill_dir, 'data.json')):
@@ -193,9 +210,9 @@ def prepare_bill(bill_dir, session):
         text = prepare_html_text(t)
 
         # If to short or too long, dont return the text
-        if len(text) < MIN_TEXT_LENGTH or len(text) > MAX_TEXT_LENGTH:
+        # if len(text) < MIN_TEXT_LENGTH or len(text) > MAX_TEXT_LENGTH:
 
-            text = None
+        #     text = None
 
         final_data['text'] = text
 
@@ -203,7 +220,7 @@ def prepare_bill(bill_dir, session):
 
 
 if __name__ == '__main__':
-    for ses in range(107, 116):
+    for ses in range(107, 113):
 
         # Change to your prefix
         path = '/data/final_data/congress/{}/bills/'.format(ses)
@@ -218,6 +235,7 @@ if __name__ == '__main__':
             subpath = os.path.join(path, btype)
             if 'res' in btype:
                 continue
+
             for file in os.listdir(subpath):
                 
                 billpath = os.path.join(subpath, file)
@@ -236,7 +254,9 @@ if __name__ == '__main__':
                         z += 1
 
         print(j, i, z)
+
         with open('/data/final_data/final/final_data_{}.jsonl'.format(ses), 'w') as f:
+
             writer = jsonlines.Writer(f)
             writer.write_all(final_dataset)
 
