@@ -71,7 +71,7 @@ pyrsistent==0.15.4
 PySocks==1.7.1
 python-dateutil==2.7.5
 pytz==2019.2
-PyYAML==3.13
+PyYAML==4.2b1
 pyzmq==18.1.0
 qtconsole==4.5.5
 requests==2.22.0
