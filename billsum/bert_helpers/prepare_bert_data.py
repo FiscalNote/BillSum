@@ -6,7 +6,10 @@ import pandas as pd
 import pickle
 
 
-prefix = os.path.expanduser('~/BSDATA/')
+prefix = os.environ['BILLSUM_PREFIX']
+
+if not prefix.endswith('/'):
+    prefix += '/'
 
 # Create additional data dirs
 if not os.path.isdir(prefix + 'bert_data'):
@@ -52,7 +55,7 @@ for key in doc_order:
 
 # Save in tsv format
 final = pd.DataFrame(to_save)
-final.to_csv(prefix + 'bert_data/train.tsv', sep='\t', index=None)
+final.to_csv(prefix + 'bert_data/us_test.tsv', sep='\t', index=None)
 
 
 # CA
