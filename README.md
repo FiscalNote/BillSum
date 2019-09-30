@@ -1,8 +1,10 @@
 # BillSum
 
-US Bill Summarization Corpus -- material in association with the paper
+US Bill Summarization Corpus + code (based on paper)
 
-**Accessing the Dataset**: Download here
+**Accessing the Dataset**: https://datahub.io/akornilo/billsum
+
+Information on how the dataset was collected is under [BillSum_Data_Documentation.md](BillSum_Data_Documentation.md)
 
 
 # Set-up
