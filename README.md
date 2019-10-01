@@ -151,7 +151,7 @@ Run `billsum/compute_statistics.py` - will output summaries of results to termin
 
 If you have generated custom summaries for legislation, you can run `compute_rouge_from_texts.py` to evaluate your performance.
 
-The script takes as input to arguments `us_sum_file` and `ca_sum_file`. 
+Update line 20 in the script to access files with your summaries.
 
 It assumes each of these is a jsonlines file of the form:
 
