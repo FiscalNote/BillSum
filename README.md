@@ -147,5 +147,18 @@ Run `billsum/compute_statistics.py` - will output summaries of results to termin
 
 # Evaluate your own solution
 
+If you have generated custom summaries for legislation, you can run `compute_rouge_from_texts.py` to evaluate your performance.
 
+The script takes as input to arguments `us_sum_file` and `ca_sum_file`. 
+
+It assumes each of these is a jsonlines file of the form:
+
+```
+{bill_id: 123, 'my_sum': 'This is my bill summary'}
+{bill_id: 456, 'my_sum': 'Another summary here'}
+```
+
+It will print out the descriptive statistics for your method. If any of the summaries are longer than 2000 characters, it will throw an error - you can adjust this limit in the code.
+
+The script will print as output descriptive statistics.
 
