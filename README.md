@@ -145,5 +145,7 @@ To get computations for the ensemble method run `billsum/evaluate_ensemble` (fix
 Run `billsum/compute_statistics.py` - will output summaries of results to terminal (also computers the oracle scores).
 
 
+# Evaluate your own solution
+
 
 
