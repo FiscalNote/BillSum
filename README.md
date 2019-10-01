@@ -6,12 +6,26 @@ US Bill Summarization Corpus + code (based on paper)
 
 Information on how the dataset was collected is under [BillSum_Data_Documentation.md](BillSum_Data_Documentation.md)
 
+**NOTE**: The Rouge scores in the paper used the *clean* versions of the summaries as the reference summaries - (see Experiments section below). Using the original summaries should not make a significant difference, but may change the exact scores).
+
+**Data Structure**
+The data is stored in a jsonlines format, with one bill per line.
+
+- text: bill text
+
+- summary: (human-written) bill summary 
+
+- title: bill title (can be used for generating a summary)
+
+- bill_id: An identified for the bill - in US data it is SESSION_BILL-ID, for CA BILL-ID 
+
 
 # Set-up
 
-1. Set the env `BILLSUM_PREFIX` to the base directory for all the data. (Download from link above)
-2. Set `PYTHONPATH=.` to run code from this directory.
-3. Install packages from `environment.lst` (we used conda, but you should be able to use pip
+1. Install python dependencies (If using conda, use env.lst. If using pip, use requirements.txt)
+2. Set the env `BILLSUM_PREFIX` to the base directory for all the data. (Download from link above)
+3. Set `PYTHONPATH=.` to run code from this directory.
+4. Install packages from `environment.lst` (we used conda, but you should be able to use pip
 ---
 
 # Experiments
@@ -133,5 +147,20 @@ To get computations for the ensemble method run `billsum/evaluate_ensemble` (fix
 Run `billsum/compute_statistics.py` - will output summaries of results to terminal (also computers the oracle scores).
 
 
+# Evaluate your own solution
 
+If you have generated custom summaries for legislation, you can run `compute_rouge_from_texts.py` to evaluate your performance.
+
+The script takes as input to arguments `us_sum_file` and `ca_sum_file`. 
+
+It assumes each of these is a jsonlines file of the form:
+
+```
+{bill_id: 123, 'my_sum': 'This is my bill summary'}
+{bill_id: 456, 'my_sum': 'Another summary here'}
+```
+
+It will print out the descriptive statistics for your method. If any of the summaries are longer than 2000 characters, it will throw an error - you can adjust this limit in the code.
+
+The script will print as output descriptive statistics.
 
