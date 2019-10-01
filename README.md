@@ -6,6 +6,8 @@ US Bill Summarization Corpus + code (based on paper)
 
 Information on how the dataset was collected is under [BillSum_Data_Documentation.md](BillSum_Data_Documentation.md)
 
+**NOTE**: The Rouge scores in the paper used the *clean* versions of the summaries as the reference summaries - (see Experiments section below). Using the original summaries should not make a significant difference, but may change the exact scores).
+
 **Data Structure**
 The data is stored in a jsonlines format, with one bill per line.
 
