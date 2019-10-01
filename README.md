@@ -6,6 +6,17 @@ US Bill Summarization Corpus + code (based on paper)
 
 Information on how the dataset was collected is under [BillSum_Data_Documentation.md](BillSum_Data_Documentation.md)
 
+**Data Structure**
+The data is stored in a jsonlines format, with one bill per line.
+
+- text: bill text
+
+- summary: (human-written) bill summary 
+
+- title: bill title (can be used for generating a summary)
+
+- bill_id: An identified for the bill - in US data it is SESSION_BILL-ID, for CA BILL-ID 
+
 
 # Set-up
 
