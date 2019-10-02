@@ -1,6 +1,8 @@
 # BillSum
 
-US Bill Summarization Corpus + code (based on paper)
+Code for the paper: [BillSum: A Corpus for Automatic Summarization of US Legislation](https://arxiv.org/abs/1910.00523) (Kornilova and Eidelman, 2019)
+
+This paper will be presented at [EMNLP 2019 Workshop on New Frontiers in Summarization](https://summarization2019.github.io/)
 
 **Accessing the Dataset**: https://datahub.io/akornilo/billsum
 
