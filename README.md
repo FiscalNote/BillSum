@@ -4,7 +4,7 @@ Code for the paper: [BillSum: A Corpus for Automatic Summarization of US Legisla
 
 This paper will be presented at [EMNLP 2019 Workshop on New Frontiers in Summarization](https://summarization2019.github.io/)
 
-[Link to Slides from workshop](https://docs.google.com/presentation/d/1GEMSvUdS7lYo_WevKhSY0NuWzy6tm5IciCj0jq-r7Vc/edit?usp=sharing)
+[Link to slides from workshop](https://docs.google.com/presentation/d/1GEMSvUdS7lYo_WevKhSY0NuWzy6tm5IciCj0jq-r7Vc/edit?usp=sharing)
 
 **Accessing the Dataset**: https://datahub.io/akornilo/billsum
 
