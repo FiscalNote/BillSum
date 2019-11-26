@@ -6,7 +6,7 @@ This paper will be presented at [EMNLP 2019 Workshop on New Frontiers in Summari
 
 [Link to slides from workshop](https://docs.google.com/presentation/d/1GEMSvUdS7lYo_WevKhSY0NuWzy6tm5IciCj0jq-r7Vc/edit?usp=sharing)
 
-**Accessing the Dataset**: https://datahub.io/akornilo/billsum
+**Accessing the Dataset**: [Link to Google Drive](https://drive.google.com/file/d/19sdXzUy1L0s1sJkeyEnYAU2jxkVYcxqK/view?usp=sharing)
 
 Information on how the dataset was collected is under [BillSum_Data_Documentation.md](BillSum_Data_Documentation.md)
 
