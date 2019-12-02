@@ -1,6 +1,6 @@
 For each bill, there are two necessary files: a metadata file (that includes the summary) and the file with the text. 
 
-We store the final version of the data "HERE", but document the full procedure for reference. First we document how to extract the source files, then how to create the final dataset.
+We store the final version of the data [here](https://drive.google.com/file/d/1g89WgFHMRbr4QrvA0ngh26PY081Nv3lx/view?usp=sharing), but document the full procedure for reference. First we document how to extract the source files, then how to create the final dataset.
 
 ---
 # Source data
