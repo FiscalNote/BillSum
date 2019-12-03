@@ -33,7 +33,10 @@ LANGUAGE = 'en'
 stemmer = Stemmer(LANGUAGE)
 
 prefix = os.environ['BILLSUM_PREFIX']
-prefix2 = os.path.join(prefix,"score_data/baseline_scores/")
+prefix2 = os.path.join(prefix,"score_data/")
+
+if not os.path.exists(model_path):
+    os.makedirs(prefix2)
 
 # import warnings
 # warnings.filterwarnings("error")
@@ -63,7 +66,7 @@ for file in os.listdir(os.path.join(prefix, 'clean_final')):
         if i % 50 == 0:
             print(i)
             
-        summary = bill['clean_summary']
+        summary = bill['summary']
         doc = bill['clean_text']
         bill_id = bill['bill_id']
 
@@ -92,5 +95,5 @@ for file in os.listdir(os.path.join(prefix, 'clean_final')):
             #except:
             #    print("Bad bill", bill_id)
     
-    pickle.dump(all_scores, open(prefix2 + 'baseline_{}_2000.pkl'.format(file), 'wb'))
+    pickle.dump(all_scores, open(os.path.join(prefix2, 'baseline_{}_2000.pkl'.format(file)), 'wb'))
 

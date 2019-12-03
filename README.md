@@ -91,6 +91,9 @@ python create_pretraining_data.py \
   --random_seed=12345 \
   --dupe_factor=5
 ```
+
+Set `$BERT_MODEL_DIR` to the directory where you want to store your pretrained model.
+
 ```
 python run_pretraining.py \
   --input_file=$BERT_DATA_DIR/all_texts_us_train.tfrecord\
@@ -107,7 +110,6 @@ python run_pretraining.py \
   --learning_rate=2e-5
 ```
 
-`$BERT_MODEL_DIR` is the directory where you want to store your pretrained model.
 
 This will take a while to run. 
 
@@ -115,21 +117,28 @@ This will take a while to run.
 
 ``` 
 python run_classifier.py   
-			--task_name=simple
-			--do_train=true   
-			--do_predict=true   
-			--do_predict_ca=true   
-			--data_dir=$BERT_DATA_DIR   
-			--vocab_file=$BERT_BASE_DIR/vocab.txt   
-			--bert_config_file=$BERT_BASE_DIR/bert_config.json   
-			--init_checkpoint=$BERT_MODEL_DIR/model.ckpt-20000   
-			--max_seq_length=128  
-			--train_batch_size=32   
-			--num_train_epochs=3.0   
-			--output_dir=$BERT_CLASSIFIER_DIR
+--task_name=simple
+--do_train=true   
+--do_predict=true   
+--do_predict_ca=true   
+--data_dir=$BERT_DATA_DIR   
+--vocab_file=$BERT_BASE_DIR/vocab.txt   
+--bert_config_file=$BERT_BASE_DIR/bert_config.json   
+--init_checkpoint=$BERT_MODEL_DIR/model.ckpt-40000   
+--max_seq_length=128  
+--train_batch_size=32   
+--num_train_epochs=3.0   
+--output_dir=$BERT_CLASSIFIER_DIR
 ```
 
 Change `BERT_CLASSIFIER_DIR` to the directory where you want to store the classifier - should be different from pretraining directory. This script will create a model in the `BERT_CLASSIFIER_DIR` and store the sentence predictions in `BERT_CLASSIFIER_DIR/` dir.
+
+For clarity:
+- BERT_BASE_DIR: directory of the original downloaded model (same as for step 3)
+- BERT_MODEL_DIR: directory where the output of the pretraining was stored
+- BERT_DATA_DIR: directory with all train/test examples
+- BERT_CLASSIFIER_DIR: directory where new model should
+
 
 5. Evaluate results using `bill_sum/bert_helpers/evaluate_bert.py`. Change the prefix variable to point to `BERT_CLASSIFIER_DIR` from above.
 

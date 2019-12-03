@@ -37,7 +37,7 @@ final = pd.DataFrame(to_save)
 final.to_csv(prefix + 'bert_data/train.tsv', sep='\t', index=None)
 
 # Store just the sentences for pretraining
-final[0].to_csv(prefix + 'bert_data/all_texts_us_train.txt', index=None)
+#final[0].to_csv(prefix + 'bert_data/all_texts_us_train.txt', index=None)
 
 
 ###### Repeat for both test files ######
@@ -55,7 +55,7 @@ for key in doc_order:
 
 # Save in tsv format
 final = pd.DataFrame(to_save)
-final.to_csv(prefix + 'bert_data/us_test.tsv', sep='\t', index=None)
+final.to_csv(prefix + 'bert_data/test.tsv', sep='\t', index=None)
 
 
 # CA

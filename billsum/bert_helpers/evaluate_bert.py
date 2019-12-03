@@ -6,19 +6,19 @@ import pickle
 from rouge import Rouge
 rouge = Rouge()
 
-prefix = os.path.expanduser('~/BSDATA/')
+prefix = os.environ['BILLSUM_PREFIX']
 
 # Note: this script assumes the data was generated using prepare_bert_data.py
 # The two go together, because we want the output predictions to match the docs
 
 # Load in predictions
 
-prefix_classifier = "" # EDIT ME
+prefix_classifier = os.path.join(prefix, 'bert_data')
 
 
 ############## US ####################
 
-predictions = pd.read_csv(prefix_classifier + 'us_test_results.tsv', sep='\t', header=None)
+predictions = pd.read_csv(os.path.join(prefix_classifier,'test_results.tsv'), sep='\t', header=None)
 pos_pred = predictions[1].values[1:]
 
 
@@ -35,7 +35,7 @@ all_scores = {}
 doc_order = sorted(sent_data.keys())
 
 i = 0
-for bill_id in sent_data:
+for bill_id in doc_order:
 
     sents = sent_data[bill_id]
     
@@ -54,12 +54,12 @@ for bill_id in sent_data:
     all_scores[bill_id] = score
     #rint(score)
 
-pickle.dump(all_scores, open(prefix + 'score_data/us_bert_scores.pkl', 'wb'))
+pickle.dump(all_scores, open(os.path.join(prefix, 'score_data/us_bert_scores.pkl'), 'wb'))
 
 
 ############## CA ####################
 
-predictions = pd.read_csv(prefix_classifier + 'ca_test_results.tsv', sep='\t', header=None)
+predictions = pd.read_csv(os.path.join(prefix_classifier,'ca_test_results.tsv'), sep='\t', header=None)
 pos_pred = predictions[1].values[1:]
 
 
@@ -76,7 +76,7 @@ all_scores = {}
 doc_order = sorted(sent_data.keys())
 
 i = 0
-for bill_id in sent_data:
+for bill_id in doc_order:
 
     sents = sent_data[bill_id]
     
@@ -94,5 +94,5 @@ for bill_id in sent_data:
     score = rouge.get_scores([docs.loc[bill_id].clean_summary], [final_sum])[0]
     all_scores[bill_id] = score
 
-pickle.dump(all_scores, open(prefix + 'score_data/ca_bert_scores.pkl', 'wb'))
+pickle.dump(all_scores, open(os.path.join(prefix, 'score_data/ca_bert_scores.pkl'), 'wb'))
 

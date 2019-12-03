@@ -55,7 +55,12 @@ del us_train, us_train_sents, us_train_sum_sents
 model = FeatureScorer()
 model.train(final_train, final_train_sum)
 
-pickle.dump(model, open(prefix + 'models/feature_scorer_model.pkl', 'wb'))
+model_path = os.path.join(prefix, 'models')
+
+if not os.path.exists(model_path):
+    os.makedirs(model_path)
+
+pickle.dump(model, open(os.path.join(model_path, 'feature_scorer_model.pkl'), 'wb'))
 
 #model = pickle.load(open(prefix + 'models/feature_scorer_model.pkl', 'rb'))
 
@@ -82,12 +87,10 @@ for locality in ['us', 'ca']:
         
         sent_texts = [v[0] for v in sents]
 
-        summary = test_data.loc[bill_id]['clean_summary']
-
-        title = test_data.loc[bill_id]['clean_title']
+        summary = test_data.loc[bill_id]['summary']
 
         final_test[bill_id] = {'doc': doc, 'scores': scores, 'sum_text': summary, 
-                               'sent_texts': sent_texts, 'title': title, 
+                               'sent_texts': sent_texts, 
                                'textlen': len(test_data.loc[bill_id]['text'])}
 
     del test_data, test_sents
