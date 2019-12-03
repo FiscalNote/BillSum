@@ -108,5 +108,5 @@ for locality in ['us', 'ca']:
 
         final_scores[bill_id] = rs
 
-    pickle.dump(final_scores, open(prefix + 'score_data/{}_test_feature_model_res.pkl'.format(locality), 'wb'))
+    pickle.dump(final_scores, open(os.path.join(prefix, 'score_data/{}_test_feature_model_res.pkl'.format(locality)), 'wb'))
 

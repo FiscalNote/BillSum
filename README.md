@@ -73,7 +73,7 @@ Bill_id --> [
 
 ## Running Bert Models
 
-0. Clone https://github.com/google-research/bert. Replace the `run_classifier.py` file with `billsum/bert_helpers/run_classifier.py` (adds custom code to read data in and out of files)
+0. Clone https://github.com/google-research/bert. Replace the `run_classifier.py` file with `billsum/bert_helpers/run_classifier.py` (adds custom code to read data in and out of files). Install dependencies as described in this repo.
 
 1. Create train.tsv / test.tsv files with `billsum/bert_helpers/prep_bert.py`. These will be stored under `PREFIX/bert_data` (set `$BERT_DATA_DIR` to point here)
 
@@ -144,6 +144,9 @@ For clarity:
 - BERT_CLASSIFIER_DIR: directory where new model should
 
 
+After this procedure is run, two files will be generated in the BERT_CLASSIFIER_DIR: test_results.tsv / ca_test_results.tsv -- this contain sentence level predictions for each test sentence. Rename the `test_results.tsv` file to `us_test_results.tsv`. Then copy both of them over to the `bert_data` folder.
+
+
 5. Evaluate results using `bill_sum/bert_helpers/evaluate_bert.py`. Change the prefix variable to point to `BERT_CLASSIFIER_DIR` from above.
 
 Results will be stored under `PREFIX/score_data/`
@@ -153,11 +156,11 @@ Results will be stored under `PREFIX/score_data/`
 
 Run `bill_sum/train_wrapper.py`. Results will be stored under `BILLSUM_PREFIX/score_data/`
 
-To get computations for the ensemble method run `billsum/evaluate_ensemble` (fix prefixes as before)
+To get computations for the ensemble method run `billsum/evaluate_ensemble.py` 
 
 ## Final Result aggregation
 
-Run `billsum/compute_statistics.py` - will output summaries of results to terminal (also computers the oracle scores).
+The `PrintFinalScores.ipynb` will compute the summary statistics for each method + generate the Oracle scores.
 
 
 # Evaluate your own solution

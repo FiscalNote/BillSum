@@ -18,8 +18,8 @@ prefix_classifier = os.path.join(prefix, 'bert_data')
 
 ############## US ####################
 
-predictions = pd.read_csv(os.path.join(prefix_classifier,'test_results.tsv'), sep='\t', header=None)
-pos_pred = predictions[1].values[1:]
+predictions = pd.read_csv(os.path.join(prefix_classifier,'us_test_results.tsv'), sep='\t', header=None)
+pos_pred = predictions[1].values
 
 
 # Load in the sentence data
@@ -50,7 +50,7 @@ for bill_id in doc_order:
 
     final_sum = ' '.join(mmr_selection(mysents, ys))
     
-    score = rouge.get_scores([final_sum], [docs.loc[bill_id].clean_summary])[0]
+    score = rouge.get_scores([final_sum], [docs.loc[bill_id].summary])[0]
     all_scores[bill_id] = score
     #rint(score)
 
@@ -60,7 +60,7 @@ pickle.dump(all_scores, open(os.path.join(prefix, 'score_data/us_bert_scores.pkl
 ############## CA ####################
 
 predictions = pd.read_csv(os.path.join(prefix_classifier,'ca_test_results.tsv'), sep='\t', header=None)
-pos_pred = predictions[1].values[1:]
+pos_pred = predictions[1].values
 
 
 # Load in the sentence data
