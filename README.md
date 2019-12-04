@@ -38,7 +38,7 @@ The data is stored in a jsonlines format, with one bill per line.
 
 # Experiments
 
-The results for the intermediate steps (explained below) can be found [here]()
+The results for the intermediate steps (explained below) can be found [here](https://drive.google.com/file/d/1uBCRSs_KFv7jD6nM4MKXZZ4nZAPI2Go4/view?usp=sharing)
 
 For all the experiments described in the paper, the texts were first cleaned using the script `billsum/data_prep/clean_text.py`. Results will be saved into the `BILLSUM_PREFIX/clean_final` directory.
 
