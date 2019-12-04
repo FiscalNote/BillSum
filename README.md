@@ -6,7 +6,8 @@ This paper will be presented at [EMNLP 2019 Workshop on New Frontiers in Summari
 
 [Link to slides from workshop](https://docs.google.com/presentation/d/1GEMSvUdS7lYo_WevKhSY0NuWzy6tm5IciCj0jq-r7Vc/edit?usp=sharing)
 
-**Accessing the Dataset**: [Link to Google Drive](https://drive.google.com/file/d/1ceywQCu2XQfDTSSSOi-eJoXrAstoDF4G/view?usp=sharing)
+**Accessing the Dataset**: [Link to Google Drive](https://drive.google.com/file/d/1ceywQCu2XQfDTSSSOi-eJoXrAstoDF4G/view?usp=sharing) - This dataset was updated on 12/3/2019, if you accessed the dataset prior to this date, please redownload it.
+
 
 Information on how the dataset was collected is under [BillSum_Data_Documentation.md](BillSum_Data_Documentation.md)
 
@@ -17,11 +18,14 @@ The data is stored in a jsonlines format, with one bill per line.
 
 - text: bill text
 
+- clean_text: a preprocessed version of the text that was used to train the models in the paper
+
 - summary: (human-written) bill summary 
 
 - title: bill title (can be used for generating a summary)
 
 - bill_id: An identified for the bill - in US data it is SESSION_BILL-ID, for CA BILL-ID 
+
 
 
 # Set-up
@@ -33,6 +37,8 @@ The data is stored in a jsonlines format, with one bill per line.
 ---
 
 # Experiments
+
+The results for the intermediate steps (explained below) can be found [here]()
 
 For all the experiments described in the paper, the texts were first cleaned using the script `billsum/data_prep/clean_text.py`. Results will be saved into the `BILLSUM_PREFIX/clean_final` directory.
 
@@ -149,7 +155,7 @@ After this procedure is run, two files will be generated in the BERT_CLASSIFIER_
 
 5. Evaluate results using `bill_sum/bert_helpers/evaluate_bert.py`. Change the prefix variable to point to `BERT_CLASSIFIER_DIR` from above.
 
-Results will be stored under `PREFIX/score_data/`
+Results will be stored under `BILLSUM_PREFIX/score_data/`
 
 
 ## Running feature classifier + ensemble
@@ -161,22 +167,4 @@ To get computations for the ensemble method run `billsum/evaluate_ensemble.py`
 ## Final Result aggregation
 
 The `PrintFinalScores.ipynb` will compute the summary statistics for each method + generate the Oracle scores.
-
-
-# Evaluate your own solution
-
-If you have generated custom summaries for legislation, you can run `compute_rouge_from_texts.py` to evaluate your performance.
-
-Update line 20 in the script to access files with your summaries.
-
-It assumes each of these is a jsonlines file of the form:
-
-```
-{bill_id: 123, 'my_sum': 'This is my bill summary'}
-{bill_id: 456, 'my_sum': 'Another summary here'}
-```
-
-It will print out the descriptive statistics for your method. If any of the summaries are longer than 2000 characters, it will throw an error - you can adjust this limit in the code.
-
-The script will print as output descriptive statistics.
 

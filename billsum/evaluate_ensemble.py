@@ -22,8 +22,6 @@ if not prefix.endswith('/'):
 
 # Load in predictions
 
-prefix_classifier = "" # EDIT ME
-
 # Stored during the train_wrapper.py script
 feature_model = pickle.load(open(prefix + '/models/feature_scorer_model.pkl', 'rb'))
 
@@ -32,25 +30,24 @@ feature_model = pickle.load(open(prefix + '/models/feature_scorer_model.pkl', 'r
 
 for locality in ['us', 'ca']:
 
-
-    predictions = pd.read_csv('random_crap/{}_test_results.tsv'.format(locality), sep='\t', header=None)
-    bert_pred = predictions[1].values[1:]
-
-
     # Load in the sentence data
-
     sent_data = pickle.load(open(prefix + 'sent_data/{}_test_sent_scores.pkl'.format(locality), 'rb'))
 
     docs = pd.read_json(prefix + 'clean_final/{}_test_data_final.jsonl'.format(locality), lines=True)
     docs.set_index('bill_id', inplace=True)
 
-
+    print(len(sent_data), len(docs), len(bert_pred))
     all_scores = {}
 
-    #doc_order = sorted(sent_data.keys())
+    # Load in bert predictions
+
+    predictions = pd.read_csv(prefix + 'bert_data/{}_test_results.tsv'.format(locality), sep='\t', header=None)
+    bert_pred = predictions[1].values
+
+    doc_order = sorted(sent_data.keys())
 
     i = 0
-    for bill_id in sent_data:
+    for bill_id in doc_order:
 
         sents = sent_data[bill_id]
 
@@ -72,10 +69,9 @@ for locality in ['us', 'ca']:
 
         final_sum = ' '.join(mmr_selection(mysents, Y))
         
-        rscore = rouge.get_scores([docs.loc[bill_id].clean_summary], [final_sum])[0]
+        rscore = rouge.get_scores( [final_sum], [docs.loc[bill_id].summary])[0]
         all_scores[bill_id] = rscore
- 
+
 
     pickle.dump(all_scores, open(prefix + 'score_data/{}_ensemble_scores.pkl'.format(locality), 'wb'))
-
-
+    
