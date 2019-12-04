@@ -2,16 +2,16 @@
 
 Code for the paper: [BillSum: A Corpus for Automatic Summarization of US Legislation](https://arxiv.org/abs/1910.00523) (Kornilova and Eidelman, 2019)
 
-This paper will be presented at [EMNLP 2019 Workshop on New Frontiers in Summarization](https://summarization2019.github.io/)
-
-[Link to slides from workshop](https://docs.google.com/presentation/d/1GEMSvUdS7lYo_WevKhSY0NuWzy6tm5IciCj0jq-r7Vc/edit?usp=sharing)
+This paper was be presented at [EMNLP 2019 Workshop on New Frontiers in Summarization](https://summarization2019.github.io/). [Link to slides from workshop](https://docs.google.com/presentation/d/1GEMSvUdS7lYo_WevKhSY0NuWzy6tm5IciCj0jq-r7Vc/edit?usp=sharing)
 
 **Accessing the Dataset**: [Link to Google Drive](https://drive.google.com/file/d/1ceywQCu2XQfDTSSSOi-eJoXrAstoDF4G/view?usp=sharing) - This dataset was updated on 12/3/2019, if you accessed the dataset prior to this date, please redownload it.
 
 
+If you do something cool with the data, share on our [Kaggle Page](https://www.kaggle.com/akornilo/billsum)!
+
 Information on how the dataset was collected is under [BillSum_Data_Documentation.md](BillSum_Data_Documentation.md)
 
-**NOTE**: The Rouge scores in the paper used the *clean* versions of the summaries as the reference summaries - (see Experiments section below). Using the original summaries should not make a significant difference, but may change the exact scores).
+
 
 **Data Structure**
 The data is stored in a jsonlines format, with one bill per line.
