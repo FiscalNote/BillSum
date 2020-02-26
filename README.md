@@ -6,9 +6,11 @@ This paper was be presented at [EMNLP 2019 Workshop on New Frontiers in Summariz
 
 **Accessing the Dataset**: 
 
-[Link to Google Drive](https://drive.google.com/file/d/1ceywQCu2XQfDTSSSOi-eJoXrAstoDF4G/view?usp=sharing) - This dataset was updated on 12/3/2019, if you accessed the dataset prior to this date, please redownload it.
+[Link to Google Drive](https://drive.google.com/file/d/1SkwK-PfcHzznKUHy2S3jfdITR4D5MD5u/view?usp=sharing) - This dataset was updated on 12/3/2019, if you accessed the dataset prior to this date, please redownload it.
 
-[TensorFlow Datasets](https://www.tensorflow.org/datasets/catalog/billsum)
+Download Options:
+[TensorFlow Datasets](https://www.tensorflow.org/datasets/catalog/billsum) - does not contain the "clean" versions of the texts
+[Link to Google Drive](https://drive.google.com/file/d/1SkwK-PfcHzznKUHy2S3jfdITR4D5MD5u/view?usp=sharing) - This dataset was updated on 12/3/2019, if you accessed the dataset prior to this date, please redownload it.
 
 If you do something cool with the data, share on our [Kaggle Page](https://www.kaggle.com/akornilo/billsum)!
 
