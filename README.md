@@ -5,12 +5,12 @@ Code for the paper: [BillSum: A Corpus for Automatic Summarization of US Legisla
 This paper was be presented at [EMNLP 2019 Workshop on New Frontiers in Summarization](https://summarization2019.github.io/). [Link to slides from workshop](https://docs.google.com/presentation/d/1GEMSvUdS7lYo_WevKhSY0NuWzy6tm5IciCj0jq-r7Vc/edit?usp=sharing)
 
 **Accessing the Dataset**: 
+This dataset was updated on 12/3/2019, if you accessed the dataset prior to this date, please redownload it.
 
-[Link to Google Drive](https://drive.google.com/file/d/1SkwK-PfcHzznKUHy2S3jfdITR4D5MD5u/view?usp=sharing) - This dataset was updated on 12/3/2019, if you accessed the dataset prior to this date, please redownload it.
+[Link to Google Drive](https://drive.google.com/file/d/1SkwK-PfcHzznKUHy2S3jfdITR4D5MD5u/view?usp=sharing) 
 
-Download Options:
 [TensorFlow Datasets](https://www.tensorflow.org/datasets/catalog/billsum) - does not contain the "clean" versions of the texts
-[Link to Google Drive](https://drive.google.com/file/d/1SkwK-PfcHzznKUHy2S3jfdITR4D5MD5u/view?usp=sharing) - This dataset was updated on 12/3/2019, if you accessed the dataset prior to this date, please redownload it.
+
 
 If you do something cool with the data, share on our [Kaggle Page](https://www.kaggle.com/akornilo/billsum)!
 
