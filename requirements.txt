@@ -3,7 +3,7 @@ asn1crypto==0.24.0
 attrs==19.1.0
 awscli==1.16.89
 backcall==0.1.0
-bleach==3.1.1
+bleach==3.1.4
 blis==0.2.4
 botocore==1.12.79
 breadability==0.1.20
