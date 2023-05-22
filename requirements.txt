@@ -69,7 +69,7 @@ pytz==2019.2
 PyYAML==4.2b1
 pyzmq==18.1.0
 qtconsole==4.5.5
-requests==2.22.0
+requests==2.31.0
 rouge==0.3.2
 rsa==3.4.2
 s3transfer==0.1.13
