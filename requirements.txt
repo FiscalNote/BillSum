@@ -58,7 +58,7 @@ ptyprocess==0.6.0
 pyasn1==0.4.5
 pycountry==19.8.18
 pycparser==2.19
-Pygments==2.4.2
+Pygments==2.15.0
 pyOpenSSL==19.0.0
 pyparsing==2.4.2
 pyrouge==0.1.3
